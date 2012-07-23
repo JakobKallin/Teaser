@@ -7,7 +7,7 @@ window.addEventListener('load', function() {
 	}
 	
 	function processNode(node) {
-		if ( node.dataset.showAfter ) {
+		if ( node.dataset.delayFor ) {
 			hide(node);
 			scheduleShow(node);
 		}
@@ -71,9 +71,9 @@ window.addEventListener('load', function() {
 	
 	// The time in milliseconds when the node should be shown, taking into account (possibly nested) data-show-following values.
 	function showDelay(node) {
-		var delay = Number(node.dataset.showAfter) * 1000;
+		var delay = Number(node.dataset.delayFor) * 1000;
 		
-		var otherNodeId = node.dataset.showFollowing;
+		var otherNodeId = node.dataset.showAfter;
 		if ( otherNodeId ) {
 			var otherNode = document.getElementById(otherNodeId);
 			if ( otherNode ) {
