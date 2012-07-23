@@ -9,7 +9,7 @@ window.addEventListener('load', function() {
 	function processNode(node) {
 		if ( node.dataset.showAfter ) {
 			hide(node);
-			scheduleAnimation(node);
+			scheduleShow(node);
 		}
 		
 		if ( node.tagName === 'AUDIO' && node.dataset.playAfter ) {
@@ -17,24 +17,36 @@ window.addEventListener('load', function() {
 		}
 	}
 	
-	function scheduleAnimation(node) {
-		var delay = effectiveDelay(node);
-		var duration = node.dataset.fadeFor || 0;
+	function scheduleShow(node) {
+		var delay = showDelay(node);
+		var fadeDuration = node.dataset.fadeFor || 0;
 		
 		var animate = function() {
 			// Style changes don't seem to take effect immediately, so we delay setting transitions until we know that the node has been hidden.
-			enableTransition(node, duration);
+			enableTransition(node, fadeDuration);
 			show(node);
+			scheduleHide(node);
 		};
 		
 		// For the same reason given above, we use JavaScript timeouts instead of CSS transition delays.
 		window.setTimeout(animate, delay);
 	}
 	
-	function enableTransition(node, duration) {
+	function scheduleHide(node) {
+		var delay = hideDelay(node);
+		
+		if ( delay !== Infinity ) {
+			var animate = function() {
+				hide(node);
+			}
+			window.setTimeout(animate, delay);
+		}
+	}
+	
+	function enableTransition(node, fadeDuration) {
 		['webkit', 'Moz', 'O'].map(function(prefix) {
 			node.style[prefix + 'TransitionProperty'] = 'opacity';
-			node.style[prefix + 'TransitionDuration'] = duration + 's';
+			node.style[prefix + 'TransitionDuration'] = fadeDuration + 's';
 		});
 	}
 	
@@ -55,20 +67,29 @@ window.addEventListener('load', function() {
 	}
 	
 	// The time in milliseconds when the node should be shown, taking into account (possibly nested) data-show-following values.
-	function effectiveDelay(node) {
+	function showDelay(node) {
 		var delay = Number(node.dataset.showAfter) * 1000;
 		
 		var otherNodeId = node.dataset.showFollowing;
 		if ( otherNodeId ) {
 			var otherNode = document.getElementById(otherNodeId);
 			if ( otherNode ) {
-				delay += effectiveDelay(otherNode);
+				delay += showDelay(otherNode);
 			} else {
 				throw new Error('Node cannot be shown following non-existing node with ID "' + otherNodeId + '.');
 			}
 		}
 		
 		return delay;
+	}
+	
+	// The time in milliseconds when the node should be hidden, counting from the time it was shown.
+	function hideDelay(node) {
+		if ( 'showFor' in node.dataset ) {
+			return Number(node.dataset.showFor) * 1000;
+		} else {
+			return Infinity;
+		}
 	}
 	
 	processDocument();
