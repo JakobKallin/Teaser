@@ -18,7 +18,7 @@ window.addEventListener('load', function() {
 	}
 	
 	function scheduleAnimation(node) {
-		var delay = Number(node.dataset.showAfter) * 1000;
+		var delay = effectiveDelay(node);
 		var duration = node.dataset.fadeFor || 0;
 		
 		var animate = function() {
@@ -52,6 +52,23 @@ window.addEventListener('load', function() {
 			node.play();
 		}
 		window.setTimeout(play, delay);
+	}
+	
+	// The time in milliseconds when the node should be shown, taking into account (possibly nested) data-show-following values.
+	function effectiveDelay(node) {
+		var delay = Number(node.dataset.showAfter) * 1000;
+		
+		var otherNodeId = node.dataset.showFollowing;
+		if ( otherNodeId ) {
+			var otherNode = document.getElementById(otherNodeId);
+			if ( otherNode ) {
+				delay += effectiveDelay(otherNode);
+			} else {
+				throw new Error('Node cannot be shown following non-existing node with ID "' + otherNodeId + '.');
+			}
+		}
+		
+		return delay;
 	}
 	
 	processDocument();
