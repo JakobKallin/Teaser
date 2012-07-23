@@ -19,7 +19,7 @@ window.addEventListener('load', function() {
 	
 	function scheduleShow(node) {
 		var delay = showDelay(node);
-		var fadeDuration = node.dataset.fadeFor || 0;
+		var fadeDuration = node.dataset.fadeInFor || 0;
 		
 		var animate = function() {
 			// Style changes don't seem to take effect immediately, so we delay setting transitions until we know that the node has been hidden.
@@ -34,9 +34,12 @@ window.addEventListener('load', function() {
 	
 	function scheduleHide(node) {
 		var delay = hideDelay(node);
+		var fadeDuration = node.dataset.fadeOutFor || 0;
 		
 		if ( delay !== Infinity ) {
 			var animate = function() {
+				// Style changes don't seem to take effect immediately, so we delay setting transitions until we know that the node has been hidden.
+				enableTransition(node, fadeDuration);
 				hide(node);
 			}
 			window.setTimeout(animate, delay);
