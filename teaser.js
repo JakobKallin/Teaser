@@ -22,7 +22,7 @@ window.addEventListener('load', function() {
 		var duration = node.dataset.fadeFor || 0;
 		
 		var animate = function() {
-			// Style changes don't seem to take effect immediately, so we delay settings transitions until we know that the node has been hidden.
+			// Style changes don't seem to take effect immediately, so we delay setting transitions until we know that the node has been hidden.
 			enableTransition(node, duration);
 			show(node);
 		};
