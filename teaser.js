@@ -22,7 +22,7 @@ window.addEventListener('load', function() {
 		var duration = node.dataset.fadeFor || 0;
 		
 		var animate = function() {
-			// We only enable the transition right before showing the node, because setting opacity right before setting transition does not seem to have any effect before the transition has been activated, causing the initial hiding of the node to be animated as well.
+			// Style changes don't seem to take effect immediately, so we delay settings transitions until we know that the node has been hidden.
 			enableTransition(node, duration);
 			show(node);
 		};
