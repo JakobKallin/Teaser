@@ -11,6 +11,10 @@ window.addEventListener('load', function() {
 			hide(node);
 			scheduleAnimation(node);
 		}
+		
+		if ( node.tagName === 'AUDIO' && node.dataset.playAfter ) {
+			schedulePlay(node);
+		}
 	}
 	
 	function scheduleAnimation(node) {
@@ -40,6 +44,14 @@ window.addEventListener('load', function() {
 	
 	function hide(node) {
 		node.style.opacity = 0;
+	}
+	
+	function schedulePlay(node) {
+		var delay = Number(node.dataset.playAfter) * 1000;
+		var play = function() {
+			node.play();
+		}
+		window.setTimeout(play, delay);
 	}
 	
 	processDocument();
