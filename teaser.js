@@ -55,6 +55,7 @@ window.addEventListener('load', function() {
 	
 	function show(node) {
 		node.style.opacity = 0.999;
+		node.style.visibility = 'visible';
 	}
 	
 	function hide(node) {
