@@ -54,7 +54,7 @@ window.addEventListener('load', function() {
 	}
 	
 	function show(node) {
-		node.style.opacity = 1;
+		node.style.opacity = 0.999;
 	}
 	
 	function hide(node) {
